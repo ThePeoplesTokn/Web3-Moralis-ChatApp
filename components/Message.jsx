@@ -1,6 +1,7 @@
 import { useMoralis } from "react-moralis";
 import Avatar from "./Avatar";
 import TimeAgo from "timeago-react";
+import Image from "next/image";
 const Message = ({ message }) => {
   const { user } = useMoralis();
   const isOwnMessage = message.get("ethAddress") === user.get("ethAddress");
@@ -18,12 +19,20 @@ const Message = ({ message }) => {
           isOwnMessage
             ? "rounded-br-none bg-indigo-700"
             : "rounded-bl-none bg-blue-500"
-        }`}
+        } ${message.get("imageUrl") && "flex-col"}`}
       >
         <p>{message.get("message")}</p>
+        {message.get("imageUrl") && (
+          <Image src={message.get("imageUrl")} width={400} height={400} className="rounded-lg cursor-pointer" draggable={false} />
+        )}
       </div>
       {/* TimeStamp */}
-      <TimeAgo datetime={message.createdAt} className={`text-[10px] italic text-white ${isOwnMessage && 'order-first pr-1'}`} />
+      <TimeAgo
+        datetime={message.createdAt}
+        className={`text-[10px] italic text-white ${
+          isOwnMessage && "order-first pr-1"
+        }`}
+      />
       <p
         className={`absolute -bottom-5 text-xs ${
           isOwnMessage ? "text-white" : "text-blue-500"
