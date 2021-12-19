@@ -1,16 +1,27 @@
 import { useRef, useState } from "react";
-import { useMoralis, useMoralisQuery } from "react-moralis";
-import { PhotographIcon } from "@heroicons/react/solid";
+import { useMoralis } from "react-moralis";
+import { PhotographIcon, EmojiHappyIcon } from "@heroicons/react/solid";
 import axios from "axios";
 import { useAlert } from "react-alert";
+import dynamic from "next/dynamic";
+import Modal from "react-modal";
+import ReactGiphySearchbox from "react-giphy-searchbox";
 
 const SendMessage = ({ endofMessagesRef }) => {
+  const Picker = dynamic(() => import("emoji-picker-react"), { ssr: false });
   const alert = useAlert();
   const { user, Moralis } = useMoralis();
   const [message, setMessage] = useState("");
   const filePickerRef = useRef(null);
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState("");
+  const [chosenEmoji, setChosenEmoji] = useState(null);
+  const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
+  const onEmojiClick = (event, emojiObject) => {
+    setChosenEmoji(emojiObject.emoji);
+    // Add emoji to message
+    setMessage(message + emojiObject.emoji);
+  };
   const uploadImage = async () => {
     if (!file) return;
     const formData = new FormData();
@@ -54,6 +65,14 @@ const SendMessage = ({ endofMessagesRef }) => {
     alert.success("Message sent successfully!");
     endofMessagesRef.current.scrollIntoView({ behavior: "smooth" });
   };
+  Modal.setAppElement("#__next");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
   return (
     <form
       className="fixed flex w-11/12 max-w-2xl p-5 bg-black border-4 border-indigo-600 rounded-full shadow-2xl bottom-10 opacity-80"
@@ -84,12 +103,47 @@ const SendMessage = ({ endofMessagesRef }) => {
           alert.info("Image Selected");
         }}
       />
+      <EmojiHappyIcon
+        className="h-6 w-6 text-indigo-500 mr-2 cursor-pointer"
+        onClick={() => {
+          toggleModal();
+        }}
+      />
       <PhotographIcon
         className="h-6 w-6 text-indigo-500 mr-2 cursor-pointer"
         onClick={() => {
           filePickerRef.current.click();
         }}
       />
+      <ReactGiphySearchbox
+        apiKey="syYsr0T8Bh6BLy75qftElq4TbqM3SFBP"
+        onSelect={(gif) => {
+          console.log(gif);
+        }}
+      />
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        contentLabel="Pick an emoji"
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: "50",
+          },
+          content: {
+            zIndex: "100",
+            top: "50%",
+            left: "50%",
+            // Make modal to the right of the cursor
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+          },
+        }}
+      >
+        <Picker onEmojiClick={onEmojiClick} className="z-50" />
+      </Modal>
       <button className="font-bold text-indigo-500">Send</button>
     </form>
   );
