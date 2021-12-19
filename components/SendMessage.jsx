@@ -6,6 +6,7 @@ import { useAlert } from "react-alert";
 import dynamic from "next/dynamic";
 import Modal from "react-modal";
 import ReactGiphySearchbox from "react-giphy-searchbox";
+import { AiOutlineGif } from "react-icons/ai";
 
 const SendMessage = ({ endofMessagesRef }) => {
   const Picker = dynamic(() => import("emoji-picker-react"), { ssr: false });
@@ -16,7 +17,8 @@ const SendMessage = ({ endofMessagesRef }) => {
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState("");
   const [chosenEmoji, setChosenEmoji] = useState(null);
-  const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isGifModalOpen, setIsGifModalOpen] = useState(false);
   const onEmojiClick = (event, emojiObject) => {
     setChosenEmoji(emojiObject.emoji);
     // Add emoji to message
@@ -66,12 +68,17 @@ const SendMessage = ({ endofMessagesRef }) => {
     endofMessagesRef.current.scrollIntoView({ behavior: "smooth" });
   };
   Modal.setAppElement("#__next");
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+  const toggleGifModal = () => {
+    setIsGifModalOpen(!isGifModalOpen);
+  };
+  const closeGifModal = () => {
+    setIsGifModalOpen(false);
   };
   return (
     <form
@@ -109,16 +116,16 @@ const SendMessage = ({ endofMessagesRef }) => {
           toggleModal();
         }}
       />
+      <AiOutlineGif
+        className="h-6 w-6 text-indigo-500 mr-2 cursor-pointer"
+        onClick={() => {
+          toggleGifModal();
+        }}
+      />
       <PhotographIcon
         className="h-6 w-6 text-indigo-500 mr-2 cursor-pointer"
         onClick={() => {
           filePickerRef.current.click();
-        }}
-      />
-      <ReactGiphySearchbox
-        apiKey="syYsr0T8Bh6BLy75qftElq4TbqM3SFBP"
-        onSelect={(gif) => {
-          console.log(gif);
         }}
       />
       <Modal
@@ -143,6 +150,36 @@ const SendMessage = ({ endofMessagesRef }) => {
         }}
       >
         <Picker onEmojiClick={onEmojiClick} className="z-50" />
+      </Modal>
+      <Modal
+        isOpen={isGifModalOpen}
+        onRequestClose={closeGifModal}
+        contentLabel="Pick an emoji"
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: "50",
+          },
+          content: {
+            zIndex: "100",
+            top: "50%",
+            left: "50%",
+            // Make modal to the right of the cursor
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+          },
+        }}
+      >
+        <ReactGiphySearchbox
+          apiKey="syYsr0T8Bh6BLy75qftElq4TbqM3SFBP"
+          onSelect={(gif) => {
+            setImageUrl(gif.embed_url);
+            closeGifModal();
+            alert.info("Gif Selected");
+          }}
+        />
       </Modal>
       <button className="font-bold text-indigo-500">Send</button>
     </form>

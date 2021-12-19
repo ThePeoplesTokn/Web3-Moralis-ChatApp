@@ -22,9 +22,29 @@ const Message = ({ message }) => {
         } ${message.get("imageUrl") && "flex-col"}`}
       >
         <p>{message.get("message")}</p>
-        {message.get("imageUrl") && (
-          <Image src={message.get("imageUrl")} width={400} height={400} className="rounded-lg cursor-pointer" draggable={false} />
-        )}
+        {message.get("imageUrl") &&
+          message.get("imageUrl").includes("cloudinary") && (
+            <Image
+              src={message.get("imageUrl")}
+              alt="Image"
+              width={400}
+              height={400}
+              className="rounded-lg"
+            />
+          )}
+        {message.get("imageUrl") &&
+          !message.get("imageUrl").includes("cloudinary") && (
+            <div>
+              <iframe
+                src={message.get("imageUrl")}
+                width="400"
+                height="400"
+                frameBorder="0"
+                class="giphy-embed"
+                allowFullScreen
+              ></iframe>
+            </div>
+          )}
       </div>
       {/* TimeStamp */}
       <TimeAgo
