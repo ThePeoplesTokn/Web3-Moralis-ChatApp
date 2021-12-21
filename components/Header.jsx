@@ -7,7 +7,7 @@ const Header = () => {
   const [username, setUsername] = useState(moralisUserName);
   const [showUserNameInput, setShowUserNameInput] = useState(false);
   return (
-    <div className="p-5 bg-black border-indigo-600 h-[45%] sticky top-0 z-40 shadow-md shadow-indigo-500">
+    <div className="p-5 bg-black border-indigo-600 h-[50%] sticky top-0 z-40 shadow-md shadow-indigo-500">
       <div className="flex justify-end">
         {showUserNameInput ? (
           <div className="flex flex-row items-center space-x-2">
