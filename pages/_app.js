@@ -1,14 +1,15 @@
 import "../styles/globals.css";
 import { MoralisProvider } from "react-moralis";
-const APP_ID = process.env.NEXT_PUBLIC_APP_ID;
-const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 import { transitions, positions, Provider as AlertProvider } from "react-alert";
 import AlertTemplate from "react-alert-template-basic";
+
+const APP_ID = "qi7eFCxPnxyCLG1aGGQFYNVZ3IBXpo3xhG1BO5VT";
+const SERVER_URL = "https://q5ztb4oif8g0.usemoralis.com:2053/server";
 const options = {
   position: positions.BOTTOM_RIGHT,
   timeout: 5000,
   offset: "30px",
-  transition: transitions.FADE,
+  transition: transitions.FADE
 };
 function MyApp({ Component, pageProps }) {
   return (

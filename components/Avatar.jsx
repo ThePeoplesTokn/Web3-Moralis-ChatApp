@@ -5,7 +5,7 @@ const Avatar = ({ username }) => {
   return (
     <Image
       className="bg-black border-8 border-indigo-600 rounded-full hover:opacity-75"
-      src={`https://avatars.dicebear.com/api/pixel-art/${
+      src={`https://avatars.dicebear.com/api/adventurer/${
         username || user.get("username")
       }.svg`}
       layout="fill"
